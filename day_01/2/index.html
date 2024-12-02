@@ -1,0 +1,45 @@
+<!---*- indent-tabs-mode: nil;tab-width: 2; -*--->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>--- Part Two ---</h1>
+  <p>Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".</p>
+  <p>Equipped with this new information, you now need to find the real first and last digit on each line. For example:</p>
+  <ul>
+    <li>two1nine</li>
+    <li>eightwothree</li>
+    <li>abcone2threexyz</li>
+    <li>xtwone3four</li>
+    <li>4nineeightseven2</li>
+    <li>zoneight234</li>
+    <li>7pqrstsixteen</li>
+  </ul>
+  <p>In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76. Adding these together produces 281.</p>
+  <p>What is the sum of all of the calibration values?</p>
+  <p>Answer is: <b><span id="answer">...</span><b></p>
+  <script>
+    elem     = document.getElementById('answer');
+    dots     = 3;
+    interval = setInterval(() => {
+      elem.innerHTML = '.'.repeat((dots % 3) + 1);
+      dots          += 1;
+    }, 500);
+
+    fetch('calibration_document.txt').then(x => x.text()).then(
+      x => {
+        mem = new WebAssembly.Memory({ initial: 1 });
+        buf = new Uint8Array(mem.buffer);
+        buf.set(new TextEncoder().encode(x)); 
+        WebAssembly.instantiateStreaming(fetch('sum_calibration_values.wasm'), { js: { mem: mem } }).then(
+          asm => {
+            answer = asm.instance.exports.solve(0);
+            clearInterval(interval);
+            elem.innerHTML = answer;
+          });
+      });
+  </script>
+</body>
+</html>

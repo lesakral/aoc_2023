@@ -23,7 +23,7 @@
             (local.set $fnum  (local.get $char))
             (local.set $fnum? (i32.const 0x01)))
           (local.set $lnum (local.get $char))
-          (br $NEW_CHAR))
+          (br        $NEW_CHAR))
         (block $ENTER
           (br_if   0                 (i32.xor (local.get $char) (i32.const 0x0A)))
           (i32.sub (local.get $lnum) (i32.const 0x30))

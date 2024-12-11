@@ -16,9 +16,8 @@
         (block $NUMBER
           (block $NUMBER_OK
             (block ;; 0-9 characters
-              (br_if 0 (i32.gt_u (local.get $char) (i32.const 0x39)))
-              (br_if 0 (i32.lt_u (local.get $char) (i32.const 0x30)))
-              (br    $NUMBER_OK))
+              (br_if 0          (i32.gt_u (local.get $char) (i32.const 0x39)))
+              (br_if $NUMBER_OK (i32.ge_u (local.get $char) (i32.const 0x30))))
             (block ;; "one" string
               (br_if 0 (i32.xor (local.get $char)                                       (i32.const 0x6F)))
               (br_if 0 (i32.xor (i32.load8_u (i32.add (local.get $addr) (i32.const 1))) (i32.const 0x6E)))

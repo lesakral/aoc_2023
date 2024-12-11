@@ -1,4 +1,4 @@
-<!---*- indent-tabs-mode: nil;tab-width: 2; -*--->
+<!---*- indent-tabs-mode:nil;tab-width:2; -*--->
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,12 +28,12 @@
       dots          += 1;
     }, 500);
 
-    fetch('calibration_document.txt').then(x => x.text()).then(
+    fetch('input.txt').then(x => x.text()).then(
       x => {
         mem = new WebAssembly.Memory({ initial: 1 });
         buf = new Uint8Array(mem.buffer);
         buf.set(new TextEncoder().encode(x)); 
-        WebAssembly.instantiateStreaming(fetch('sum_calibration_values.wasm'), { js: { mem: mem } }).then(
+        WebAssembly.instantiateStreaming(fetch('solve.wasm'), { js: { mem: mem } }).then(
           asm => {
             answer = asm.instance.exports.solve(0);
             clearInterval(interval);

@@ -15,7 +15,7 @@
       (br_if     $GAME_END (i32.eqz (i32.load8_u (local.get $addr))))
       (local.tee $addr     (i32.add (local.get $addr) (i32.const 5)))
       (local.set $char     (i32.load8_u))
-      (local.set $game     (i32.const 0x00))
+      (local.set $game     (i32.const 0))
       (loop ;; Parse game number
         (i32.sub (local.get $char) (i32.const 0x30))
         (i32.mul (local.get $game) (i32.const 0x0A))

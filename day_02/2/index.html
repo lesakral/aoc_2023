@@ -1,0 +1,53 @@
+<!---*- indent-tabs-mode:nil;tab-width:2; -*--->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>--- Part Two ---</h1>
+  <p>The Elf says they've stopped producing snow because they aren't getting any <b>water</b>! He isn't sure why the water stopped; however, he can show you how to get to the water source to check it out for yourself. It's just up ahead!</p>
+  <p>As you continue your walk, the Elf poses a second question: in each game you played, what is the <b>fewest number of cubes of each color</b> that could have been in the bag to make the game possible?</p>
+  <p>Again consider the example games from earlier:</p>
+  <ul>
+    <code>
+      <li>Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green</li>
+      <li>Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue</li>
+      <li>Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red</li>
+      <li>Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red</li>
+      <li>Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green</li>
+    </code>
+  </ul>
+  <ul>
+    <li>In game 1, the game could have been played with as few as 4 red, 2 green, and 6 blue cubes. If any color had even one fewer cube, the game would have been impossible.</li>
+    <li>Game 2 could have been played with a minimum of 1 red, 3 green, and 4 blue cubes.</li>
+    <li>Game 3 must have been played with at least 20 red, 13 green, and 6 blue cubes.</li>
+    <li>Game 4 required at least 14 red, 3 green, and 15 blue cubes.</li>
+    <li>Game 5 needed no fewer than 6 red, 3 green, and 2 blue cubes in the bag.</li>
+  </ul>
+  <p>The <b>power</b> of a set of cubes is equal to the numbers of red, green, and blue cubes multiplied together. The power of the minimum set of cubes in game 1 is <tt>48</tt>. In games 2-5 it was <tt>12</tt>, <tt>1560</tt>, <tt>630</tt>, and <tt>36</tt>, respectively. Adding up these five powers produces the sum <b><tt>2286</tt></b>.</p>
+  <p>For each game, find the minimum set of cubes that must have been present. <b>What is the sum of the power of these sets?</b></p>
+  <p>Answer is: <b><span id="answer">...</span><b></p>
+  <script>
+    elem     = document.getElementById('answer');
+    dots     = 3;
+    interval = setInterval(() => {
+      elem.innerHTML = '.'.repeat((dots % 3) + 1);
+      dots          += 1;
+    }, 500);
+
+    fetch('input.txt').then(x => x.text()).then(
+      x => {
+        mem = new WebAssembly.Memory({ initial: 1 });
+        buf = new Uint8Array(mem.buffer);
+        buf.set(new TextEncoder().encode(x)); 
+        WebAssembly.instantiateStreaming(fetch('solve.wasm'), { js: { mem: mem } }).then(
+          asm => {
+            answer = asm.instance.exports.solve(0);
+            clearInterval(interval);
+            elem.innerHTML = answer;
+          });
+      });
+  </script>
+</body>
+</html>

@@ -15,7 +15,7 @@
       (br_if     $GAME_END (i32.eqz (i32.load8_u (local.get $addr))))
       (local.tee $addr     (i32.add (local.get $addr) (i32.const 5)))
       (local.set $char     (i32.load8_u))
-      (local.set $game     (i32.const 0x00))
+      (local.set $game     (i32.const 0))
       (loop ;; Parse game number
         (i32.sub (local.get $char) (i32.const 0x30))
         (i32.mul (local.get $game) (i32.const 0x0A))
@@ -54,7 +54,7 @@
         (local.tee $addr (i32.add (local.get $addr) (i32.const 1)))
         (local.set $char (i32.load8_u))
         (br_if $COLOR (i32.eq  (local.get $char) (i32.const 0x2C)))
-        (block
+        (block ;; On ',' check if possible, if not skip line
           (br_if 0 (i32.xor (local.get $char) (i32.const 0x3B)))
           (block
             (br_if 0     (i32.gt_u (local.get $red)   (i32.const 12)))
@@ -65,9 +65,9 @@
             (local.set $addr (i32.add     (local.get $addr) (i32.const 0x01)))
             (br_if     $GAME (i32.eq      (local.get $char) (i32.const 0x0A)))
             (br        0)))
-        (block ;; Support '\n'
+        (block ;; On '\n' check if possible
           (br_if 0 (i32.xor (local.get $char) (i32.const 0x0A)))
-          (block ;; Check if possible
+          (block
             (br_if     0    (i32.gt_u (local.get $red)   (i32.const 12)))
             (br_if     0    (i32.gt_u (local.get $green) (i32.const 13)))
             (br_if     0    (i32.gt_u (local.get $blue)  (i32.const 14)))

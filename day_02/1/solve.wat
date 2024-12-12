@@ -5,7 +5,7 @@
   (func $solve (param $addr i32) (result i32)
     (local $char  i32)
     (local $game  i32)
-    (local $tmp   i32)
+    (local $temp  i32)
     (local $red   i32)
     (local $green i32)
     (local $blue  i32)
@@ -28,37 +28,33 @@
         (local.set $green (i32.const 0))
         (local.set $blue  (i32.const 0))
       (loop $COLOR
-        (local.tee $addr  (i32.add (local.get $addr) (i32.const 2))) ;; Skip space
-        (local.set $char  (i32.load8_u))
-        (local.set $tmp   (i32.const 0))
+        (local.tee $addr (i32.add (local.get $addr) (i32.const 2))) ;; Skip space
+        (local.set $char (i32.load8_u))
+        (local.set $temp (i32.const 0))
         (loop
           (i32.sub (local.get $char) (i32.const 0x30))
-          (i32.mul (local.get $tmp)  (i32.const 0x0A))
-          (local.set $tmp  (i32.add))
+          (i32.mul (local.get $temp) (i32.const 0x0A))
+          (local.set $temp (i32.add))
           (local.tee $addr (i32.add (local.get $addr) (i32.const 1)))
           (local.tee $char (i32.load8_u))
           (br_if     0     (i32.xor (i32.const 0x20)))) ;; Read until ' '
         (block
           (local.tee $addr (i32.add (local.get $addr) (i32.const 1)))
           (local.set $char (i32.load8_u))
-          (block ;; Red
-            (br_if     0      (i32.xor (local.get $char) (i32.const 0x72)))
-            (local.set $red   (local.get $tmp))
+          (block
+            (br_if     0    (i32.xor (local.get $char) (i32.const 0x72)))
+            (local.set $red (local.get $temp))
             (br        1))
-          (block ;; Green
+          (block
             (br_if     0      (i32.xor (local.get $char) (i32.const 0x67)))
-            (local.set $green (local.get $tmp))
+            (local.set $green (local.get $temp))
             (br        1))
-          (block ;; Blue
-            (br_if     0      (i32.xor (local.get $char) (i32.const 0x62)))
-            (local.set $blue  (local.get $tmp))
-            (br        1)))
-      (loop $ACTION
+          (local.set $blue (local.get $temp)))
+      (loop
         (local.tee $addr (i32.add (local.get $addr) (i32.const 1)))
         (local.set $char (i32.load8_u))
-        (block ;; Support ','
-          (br_if $COLOR (i32.eq  (local.get $char) (i32.const 0x2C))))
-        (block ;; Support ';'
+        (br_if $COLOR (i32.eq  (local.get $char) (i32.const 0x2C)))
+        (block
           (br_if 0 (i32.xor (local.get $char) (i32.const 0x3B)))
           (block
             (br_if 0     (i32.gt_u (local.get $red)   (i32.const 12)))
@@ -76,9 +72,9 @@
             (br_if     0    (i32.gt_u (local.get $green) (i32.const 13)))
             (br_if     0    (i32.gt_u (local.get $blue)  (i32.const 14)))
             (local.set $acc (i32.add  (local.get $acc)   (local.get $game))))
-          (local.set $addr (i32.add (local.get $addr) (i32.const 1))) ;; Jump to next line
+          (local.set $addr (i32.add (local.get $addr) (i32.const 1)))
           (br        $GAME))
-        (br $ACTION))))))
+        (br 0))))))
     (local.get $acc))
 
   (export "solve" (func $solve))
